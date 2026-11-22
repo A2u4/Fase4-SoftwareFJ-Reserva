@@ -2,3 +2,10 @@ ERROR:root:La reserva no esta confirmada
 INFO:root:Proceso terminado para Luis
 INFO:root:Proceso terminado para Pedro
 ERROR:root:No se pudo procesar la reserva
+INFO:root:Proceso terminado para Maria
+INFO:root:Proceso terminado para Jose
+ERROR:root:La reserva no esta confirmada
+ERROR:root:Las horas deben ser mayores a 0
+ERROR:root:El cliente debe ser un texto
+ERROR:root:Las horas deben ser un numero
+ERROR:root:El campo tarifa base debe ser un numero mayor que cero.
