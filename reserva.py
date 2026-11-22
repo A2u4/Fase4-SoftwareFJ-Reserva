@@ -2,7 +2,7 @@
 # Autor: Adrian David Uriel Vergara
 # Usa los servicios del modulo 3 (Leidy Alvarez), archivo servicios.py
 
-from servicios import ReservaSala  # traigo la sala del modulo de Leidy
+from servicios import ReservaSala, AlquilerEquipo, AsesoriaEspecializada  # traigo los servicios del modulo de Leidy
 import logging  # herramienta de Python para escribir en un archivo de log
 
 # todo lo que pase se guarda en el archivo reserva.log
@@ -59,7 +59,7 @@ sala_b = ReservaSala("S02", "Sala B", 40000, 5, False)  # sala NO disponible
 print(sala.describir())
 print(sala_b.describir())
 
-# Ana: su reserva no esta confirmada, debe dar error
+# Simulacion 1 - Ana: su reserva no esta confirmada, debe dar error
 r = Reserva("Ana", sala, 3)
 try:
     r.procesar()
@@ -67,12 +67,12 @@ except ReservaError as error:
     print("Error:", error)
     logging.error(error)  # el error tambien queda en el log
 
-# Luis: su reserva esta confirmada, debe pagar
+# Simulacion 2 - Luis: su reserva esta confirmada, debe pagar
 r2 = Reserva("Luis", sala, 2)
 r2.confirmar()
 print("Costo:", r2.procesar())
 
-# Pedro: la sala B no esta disponible, debe dar error
+# Simulacion 3 - Pedro: la sala B no esta disponible, debe dar error
 r3 = Reserva("Pedro", sala_b, 2)
 r3.confirmar()
 try:
@@ -80,6 +80,59 @@ try:
 except ReservaError as error:
     print("Error:", error, "Causa:", error.__cause__)  # muestro mi error y la causa original
     logging.error(error)  # el error tambien queda en el log
+
+
+# Simulaciones 4 a 9 usan la misma forma, por eso la pongo en una funcion
+def simular(numero, reserva):
+    print("Simulacion", numero, "-", reserva.cliente)  # que simulacion es
+    try:
+        costo = reserva.procesar()  # intento procesar la reserva
+        print("  Costo:", costo)  # si salio bien, muestro el precio
+    except ReservaError as error:
+        print("  Error:", error)  # si salio mal, muestro el error
+        logging.error(error)  # y lo guardo en el log
+
+
+asesoria = AsesoriaEspecializada("A01", "Asesoria Python", 80000, "Programacion")  # asesoria disponible
+equipo = AlquilerEquipo("E01", "Portatil", 30000, 3)  # 3 portatiles disponibles
+
+# Simulacion 4 - Maria: asesoria confirmada de 2 horas, debe pagar
+r4 = Reserva("Maria", asesoria, 2)
+r4.confirmar()
+simular(4, r4)
+
+# Simulacion 5 - Jose: alquila un portatil 1 dia, debe pagar
+r5 = Reserva("Jose", equipo, 1)
+r5.confirmar()
+simular(5, r5)
+
+# Simulacion 6 - Carla: cancela su reserva y luego intenta procesarla, debe dar error
+r6 = Reserva("Carla", sala, 2)
+r6.cancelar()
+simular(6, r6)
+
+# Simulacion 7 - Sofia: reserva 0 horas, debe dar error
+r7 = Reserva("Sofia", sala, 0)
+r7.confirmar()
+simular(7, r7)
+
+# Simulacion 8 - el cliente es un numero, debe dar error
+r8 = Reserva(123, sala, 2)
+r8.confirmar()
+simular(8, r8)
+
+# Simulacion 9 - Diego: escribe las horas en texto, debe dar error
+r9 = Reserva("Diego", sala, "tres")
+r9.confirmar()
+simular(9, r9)
+
+# Simulacion 10 - crear un servicio con tarifa negativa, el modulo de Leidy debe dar error
+print("Simulacion 10 - servicio con datos incorrectos")
+try:
+    sala_mala = ReservaSala("S03", "Sala C", -5000, 10)  # tarifa negativa
+except ValueError as error:
+    print("  Error:", error)  # muestro el error del servicio
+    logging.error(error)  # y lo guardo en el log
 
 # si llega aqui, el programa nunca se detuvo
 print("Finalizado")
